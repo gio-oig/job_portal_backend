@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ExtendedError } from "../public/models/ErrorClass";
 import {
+  companyDataValidation,
   logInInputValidation,
   registerInputValidation,
   seekerDataValidation,
@@ -44,6 +45,21 @@ export const seekerValidation = (
   next: NextFunction
 ) => {
   const { error } = seekerDataValidation(req.body);
+  let formatedErrorObj: FormatedInputError = {};
+
+  if (error) {
+    formatedErrorObj = formatError(error);
+    next(new ExtendedError("Invalid properties", 500, formatedErrorObj));
+  }
+  next();
+};
+
+export const companyValidation = (
+  req: Request,
+  _: Response,
+  next: NextFunction
+) => {
+  const { error } = companyDataValidation(req.body);
   let formatedErrorObj: FormatedInputError = {};
 
   if (error) {

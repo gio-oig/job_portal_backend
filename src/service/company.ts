@@ -18,3 +18,5 @@ class CompanyService {
     return { message: "company created successfully", data: response };
   }
 }
+
+export const companyService = new CompanyService();

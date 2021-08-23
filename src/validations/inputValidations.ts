@@ -51,13 +51,13 @@ export const createJobDataValidation = (data: {
   return schema.validate(data);
 };
 
-export const CompanyDataValidation = (data: {
+export const companyDataValidation = (data: {
   companyName: string;
   companyDescription: string;
   userAccountId: number;
 }) => {
   const schema = Joi.object({
-    companyName: Joi.string().min(3).required(),
+    companyName: Joi.string().min(1).required(),
     companyDescription: Joi.string().min(3).required(),
     userAccountId: Joi.number().required(),
   }).options({ abortEarly: false });
