@@ -1,4 +1,4 @@
-import { Job as JobType } from "@prisma/client";
+import { Job as PrismaJob } from "@prisma/client";
 import { Job as JobInstance } from "../public/models/JobClass";
 import { jobRepo } from "../repository/job/Job";
 
@@ -19,7 +19,7 @@ class JobService {
     companyId,
     locationId,
     categoryId,
-  }: Job): Promise<{ message: string; data: JobType }> {
+  }: Job): Promise<{ message: string; data: PrismaJob }> {
     const jobInstance = new JobInstance(
       title,
       description,

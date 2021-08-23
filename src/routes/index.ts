@@ -6,6 +6,7 @@ import { ExtendedError } from "../public/models/ErrorClass";
 import { userService } from "../service/userService";
 import { authorize } from "../_helpers/authorization";
 import { createJob } from "./jobRoutes";
+import companyRouter from "./companyRoutes";
 
 const router = Router();
 
@@ -65,3 +66,5 @@ router.post(
   createSeekerProfile
 );
 export default router;
+
+router.use("/company", companyRouter);

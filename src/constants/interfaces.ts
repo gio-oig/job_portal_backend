@@ -2,9 +2,12 @@ export interface ValidationError {
   [item: string]: string;
 }
 
-export interface AuthResponse {
+export interface BaseResponse {
   message: string;
   data?: object;
+}
+
+export interface AuthResponse extends BaseResponse {
   token?: string;
 }
 
@@ -21,4 +24,10 @@ export enum Role {
   USER = "USER",
   HR = "HR",
   ADMIN = "ADMIN",
+}
+
+export interface Company {
+  company_name: string;
+  company_description: string;
+  user_account_id: number;
 }
