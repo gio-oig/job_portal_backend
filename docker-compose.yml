@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:11-alpine
+    restart: always
+    ports:
+      - 4321:5432
+    environment:
+      POSTGRES_DB: jobs_dev
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+  web:
+    build: .
+    depends_on:
+      - postgres
+    ports:
+      - 5000:5000
+    environment:
+      DATABASE_URL: postgres://postgres@postgres/jobs_dev
+      PORT: 5000
+      SECRET: "super secret"

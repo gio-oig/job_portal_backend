@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model UserAccount {
+  id            Int            @id @default(autoincrement())
+  created_at    DateTime       @default(now())
+  email         String         @unique
+  role          Role           @default(USER)
+  password      String
+  SeekerProfile SeekerProfile?
+  Company       Company[]
+
+  @@map(name: "user_accounts")
+}
+
+model SeekerProfile {
+  id              Int         @id @default(autoincrement())
+  first_name      String
+  last_name       String
+  user_account    UserAccount @relation(fields: [user_account_id], references: [id])
+  user_account_id Int
+
+  @@map("seeker_profiles")
+}
+
+model Company {
+  id                  Int            @id @default(autoincrement())
+  company_name        String
+  company_description String         @db.Text
+  user_account_id     Int
+  user_account        UserAccount    @relation(fields: [user_account_id], references: [id])
+  Job                 Job[]
+  CompanyImage        CompanyImage[]
+
+  @@map("companies")
+}
+
+model CompanyImage {
+  id            Int     @id @default(autoincrement())
+  company_image String
+  company_id    Int
+  company       Company @relation(fields: [company_id], references: [id])
+
+  @@map("company_images")
+}
+
+model Job {
+  id              Int         @id @default(autoincrement())
+  title           String
+  description     String      @db.Text
+  created_at      DateTime    @default(now())
+  expiration_date DateTime
+  creator_id      Int
+  location_id     Int
+  category_id     Int
+  creator         Company     @relation(fields: [creator_id], references: [id])
+  location        JobLocation @relation(fields: [location_id], references: [id])
+  category        Category    @relation(fields: [category_id], references: [id])
+
+  @@map("jobs")
+}
+
+model JobLocation {
+  id   Int    @id @default(autoincrement())
+  city String
+  Job  Job[]
+
+  @@map("job_locations")
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+  Job  Job[]
+
+  @@map("categories")
+}
+
+enum Role {
+  USER
+  HR
+  ADMIN
+}
