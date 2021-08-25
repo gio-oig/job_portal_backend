@@ -45,6 +45,17 @@ class CompanyRepo {
       throw new ExtendedError("unable to find company, please try again later");
     }
   }
+  async getCompanies() {
+    try {
+      const companies = await this.prisma.company.findMany({
+        include: {
+          CompanyImage: true,
+        },
+      });
+
+      return companies;
+    } catch (error) {}
+  }
 }
 
 export const companyRepo = new CompanyRepo(

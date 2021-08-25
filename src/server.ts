@@ -23,6 +23,10 @@ app.use(
 app.use("/auth", AuthRouter);
 app.use("/api", BaseRouter);
 
+app.use("/", (req, res) => {
+  res.send("works");
+});
+
 app.use((req, res, next) => {
   return next(new Error("Could not find this route"));
 });
