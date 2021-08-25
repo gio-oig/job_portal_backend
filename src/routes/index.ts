@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { AuthResponse, Role, SeekerResponse } from "../constants/interfaces";
-import { fileUpload } from "../middlewares/fileUpload";
 import { seekerValidation } from "../middlewares/validation";
 import { ExtendedError } from "../public/models/ErrorClass";
 import { userService } from "../service/userService";
 import { authorize } from "../_helpers/authorization";
-import { createJob } from "./jobRoutes";
+import jobRouter from "./jobRoutes";
 import companyRouter from "./companyRoutes";
 
 const router = Router();
@@ -50,21 +49,13 @@ router.get(
   }
 );
 
-router.post("/job", authorize([Role.HR]), createJob);
-
-router.post("/company/images", fileUpload.array("image"), (req, res, next) => {
-  console.log(req.files);
-  // return next(new Error("delete image on error"));
-  // console.log(req.files);
-  res.send("image saved");
-});
-
 router.post(
   "/seeker",
   seekerValidation,
   authorize([Role.USER]),
   createSeekerProfile
 );
-export default router;
-
+router.use("/job", jobRouter);
 router.use("/company", companyRouter);
+
+export default router;

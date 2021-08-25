@@ -36,4 +36,6 @@ export const createJob = async (
   return res.status(200).json(response);
 };
 
+router.post("/", authorize([Role.HR]), createJob);
+
 export default router;

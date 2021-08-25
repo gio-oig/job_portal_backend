@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import { Company } from "../../public/models/CompanyClass";
+import { Company as CompanyInstance } from "../../public/models/CompanyClass";
 import { ExtendedError } from "../../public/models/ErrorClass";
 
 class CompanyRepo {
   constructor(private prisma: PrismaClient) {}
 
-  async createCompany(company: Company) {
+  async createCompany(company: CompanyInstance) {
     try {
       const createdCompany = await this.prisma.company.create({
         data: {
@@ -17,9 +17,36 @@ class CompanyRepo {
 
       return createdCompany;
     } catch (error) {
-      return new ExtendedError("could not create company");
+      throw new ExtendedError("could not create company");
+    }
+  }
+
+  async saveImages(image: string, companyId: number) {
+    console.log(image);
+    try {
+      const createdImage = await this.prisma.companyImage.create({
+        data: {
+          company_image: image,
+          company_id: companyId,
+        },
+      });
+    } catch (error) {
+      throw new ExtendedError("could not create image");
+    }
+  }
+
+  async getCompanyById(id: number) {
+    try {
+      const company = this.prisma.company.findUnique({
+        where: { id: id },
+      });
+      return company;
+    } catch (error) {
+      throw new ExtendedError("unable to find company, please try again later");
     }
   }
 }
 
-export const companyRepo = new CompanyRepo(new PrismaClient());
+export const companyRepo = new CompanyRepo(
+  new PrismaClient({ log: ["query", "info"] })
+);

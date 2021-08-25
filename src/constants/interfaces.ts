@@ -31,3 +31,10 @@ export interface Company {
   company_description: string;
   user_account_id: number;
 }
+
+export type MulterFiles =
+  | Express.Multer.File[]
+  | {
+      [fieldname: string]: Express.Multer.File[];
+    }
+  | undefined;
