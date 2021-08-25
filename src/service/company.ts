@@ -46,6 +46,12 @@ class CompanyService {
 
     return { message: "images saved successfully" };
   }
+
+  async getCompanies() {
+    let response = await companyRepo.getCompanies();
+
+    return { message: "success", companies: response };
+  }
 }
 
 export const companyService = new CompanyService();

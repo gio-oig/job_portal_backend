@@ -1,5 +1,5 @@
 import { Role } from "@prisma/client";
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, response, Response, Router } from "express";
 import { fileUpload } from "../middlewares/fileUpload";
 import { companyValidation } from "../middlewares/validation";
 import { ExtendedError } from "../public/models/ErrorClass";
@@ -42,6 +42,23 @@ const saveCompanyImages = async (
 
   res.status(200).json(response);
 };
+
+const getCompanies = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  let response;
+  try {
+    response = await companyService.getCompanies();
+  } catch (error) {
+    return next(new ExtendedError(error.message));
+  }
+
+  res.status(200).json(response);
+};
+
+router.get("/", getCompanies);
 
 router.post(
   "/images",
