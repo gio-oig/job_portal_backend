@@ -63,3 +63,14 @@ export const companyDataValidation = (data: {
   }).options({ abortEarly: false });
   return schema.validate(data);
 };
+
+export const resetPasswordDataValidation = (data: {
+  oldPassword: string;
+  newPassword: string;
+}) => {
+  const schema = Joi.object({
+    oldPassword: Joi.string().min(1).required(),
+    newPassword: Joi.string().min(1).required(),
+  }).options({ abortEarly: false });
+  return schema.validate(data);
+};

@@ -1,11 +1,13 @@
 import { Router, NextFunction, Request, Response } from "express";
-import { AuthResponse } from "../../constants/interfaces";
+import { AuthResponse, Role } from "../../constants/interfaces";
 import {
   logInValidation,
   registerValidation,
+  resetPasswordValidation,
 } from "../../middlewares/validation";
 import { ExtendedError } from "../../public/models/ErrorClass";
 import { userService } from "../../service/userService";
+import { authorize } from "../../_helpers/authorization";
 
 const router = Router();
 
@@ -33,7 +35,34 @@ const logIn = async (req: Request, res: Response, next: NextFunction) => {
   return res.status(200).json(response);
 };
 
+const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const userId = (req.user as { sub: number }).sub;
+  const { oldPassword, newPassword } = req.body;
+
+  let response;
+  try {
+    response = await userService.resetPassword(
+      userId,
+      oldPassword,
+      newPassword
+    );
+  } catch (error) {
+    return next(new ExtendedError(error.message, 500, error.data));
+  }
+  return res.status(200).json(response);
+};
+
 router.post("/signup", registerValidation, signUp);
 router.post("/login", logInValidation, logIn);
+router.put(
+  "/resetPassword",
+  resetPasswordValidation,
+  authorize([Role.ADMIN, Role.HR, Role.USER]),
+  resetPassword
+);
 
 export default router;

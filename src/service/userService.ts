@@ -1,8 +1,13 @@
+import bcrypt from "bcryptjs";
 import { ExtendedError } from "../public/models/ErrorClass";
 import { User } from "../public/models/UserClass";
 import { userRepo } from "../repository/user/User";
-import bcrypt from "bcryptjs";
-import { AuthResponse, Role, SeekerResponse } from "../constants/interfaces";
+import {
+  AuthResponse,
+  BaseResponse,
+  Role,
+  SeekerResponse,
+} from "../constants/interfaces";
 import jwt from "jsonwebtoken";
 import { UserAccount, SeekerProfile as SeekerType } from "@prisma/client";
 import { SeekerProfile } from "../public/models/SeekerClass";
@@ -65,6 +70,36 @@ class UserService {
       message: "success",
       data: user,
       token: TOKEN,
+    };
+  }
+
+  async resetPassword(
+    userId: number,
+    oldPassword: string,
+    newPassword: string
+  ): Promise<BaseResponse> {
+    const existingUser = await userRepo.findUserById(userId);
+    if (!existingUser) {
+      throw new ExtendedError("could not find user with this id");
+    }
+
+    const validPassword = await bcrypt.compare(
+      oldPassword,
+      existingUser.password
+    );
+    if (!validPassword) {
+      throw new ExtendedError("Invalid password", 500, {
+        password: "Invalid password",
+      });
+    }
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    await userRepo.resetPassword(userId, hashedPassword);
+
+    return {
+      message: "password updated successfully",
     };
   }
 }

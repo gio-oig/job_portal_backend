@@ -8,6 +8,7 @@ import { NextFunction } from "connect";
 import BaseRouter from "./routes";
 import AuthRouter from "./routes/auth/authRoutes";
 import { ExtendedError } from "./public/models/ErrorClass";
+import nodemailer from "nodemailer";
 
 const app = express();
 

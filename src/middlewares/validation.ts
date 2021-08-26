@@ -4,6 +4,7 @@ import {
   companyDataValidation,
   logInInputValidation,
   registerInputValidation,
+  resetPasswordDataValidation,
   seekerDataValidation,
 } from "../validations/inputValidations";
 import { FormatedInputError } from "../constants/interfaces";
@@ -60,6 +61,21 @@ export const companyValidation = (
   next: NextFunction
 ) => {
   const { error } = companyDataValidation(req.body);
+  let formatedErrorObj: FormatedInputError = {};
+
+  if (error) {
+    formatedErrorObj = formatError(error);
+    next(new ExtendedError("Invalid properties", 500, formatedErrorObj));
+  }
+  next();
+};
+
+export const resetPasswordValidation = (
+  req: Request,
+  _: Response,
+  next: NextFunction
+) => {
+  const { error } = resetPasswordDataValidation(req.body);
   let formatedErrorObj: FormatedInputError = {};
 
   if (error) {
