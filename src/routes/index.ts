@@ -49,6 +49,10 @@ router.get(
   }
 );
 
+/**
+ * @baseRoutes
+ * @prefix /api
+ */
 router.post(
   "/seeker",
   seekerValidation,

@@ -58,7 +58,16 @@ const getCompanies = async (
   res.status(200).json(response);
 };
 
+/**
+ * @endpoint http://localhost:5000/api/company
+ */
+
 router.get("/", getCompanies);
+
+router.post("/", companyValidation, authorize([Role.HR]), createCompany);
+/**
+ * @description save company images
+ */
 
 router.post(
   "/images",
@@ -66,7 +75,5 @@ router.post(
   fileUpload.array("image"),
   saveCompanyImages
 );
-
-router.post("/", companyValidation, authorize([Role.HR]), createCompany);
 
 export default router;

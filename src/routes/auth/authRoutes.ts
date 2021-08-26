@@ -56,6 +56,10 @@ const resetPassword = async (
   return res.status(200).json(response);
 };
 
+/**
+ * @authRoutes
+ * @prefix /auth
+ */
 router.post("/signup", registerValidation, signUp);
 router.post("/login", logInValidation, logIn);
 router.put(

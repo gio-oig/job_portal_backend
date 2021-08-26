@@ -1,4 +1,4 @@
-import express, { Express } from "express";
+import express from "express";
 import path from "path";
 import fs from "fs";
 import morgan from "morgan";
@@ -8,10 +8,12 @@ import { NextFunction } from "connect";
 import BaseRouter from "./routes";
 import AuthRouter from "./routes/auth/authRoutes";
 import { ExtendedError } from "./public/models/ErrorClass";
-import nodemailer from "nodemailer";
 
 const app = express();
 
+/**
+ * @middleware
+ */
 app.use(express.json());
 app.use(morgan("common"));
 app.use(cors());
@@ -21,13 +23,22 @@ app.use(
   express.static(path.join(__dirname, "..", "uploads", "images"))
 );
 
+/**
+ * @routers
+ */
 app.use("/auth", AuthRouter);
 app.use("/api", BaseRouter);
 
+/**
+ * @description handle incorrect routes
+ */
 app.use((req, res, next) => {
   return next(new Error("Could not find this route"));
 });
 
+/**
+ * @description handle errors in application
+ */
 app.use(
   (error: ExtendedError, req: Request, res: Response, next: NextFunction) => {
     console.log("error handler route");
