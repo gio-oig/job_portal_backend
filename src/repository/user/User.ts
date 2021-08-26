@@ -38,6 +38,29 @@ class UserRepo {
     return existingUser;
   }
 
+  public async findUserById(userId: number) {
+    const existingUser = await this.prisma.userAccount.findUnique({
+      where: { id: userId },
+    });
+
+    return existingUser;
+  }
+
+  public async resetPassword(userId: number, updatedPassword: string) {
+    try {
+      await this.prisma.userAccount.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          password: updatedPassword,
+        },
+      });
+    } catch (error) {
+      throw new ExtendedError("could not update password");
+    }
+  }
+
   public async createSeekerProfile(seeker: SeekerProfile) {
     // console.log(seeker);
     try {
