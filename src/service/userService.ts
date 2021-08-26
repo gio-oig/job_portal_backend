@@ -11,6 +11,7 @@ import {
 import jwt from "jsonwebtoken";
 import { UserAccount, SeekerProfile as SeekerType } from "@prisma/client";
 import { SeekerProfile } from "../public/models/SeekerClass";
+import { sendEmail } from "../_helpers/sendEmail";
 
 class UserService {
   async createSeekerProfile(
@@ -92,6 +93,56 @@ class UserService {
         password: "Invalid password",
       });
     }
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    await userRepo.resetPassword(userId, hashedPassword);
+
+    return {
+      message: "password updated successfully",
+    };
+  }
+
+  async forgotPassword(userId: number) {
+    const TOKEN = jwt.sign(
+      { sub: userId },
+      //@ts-ignore
+      process.env.SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+    const user = await userRepo.findUserById(userId);
+    if (!user) {
+      throw new ExtendedError("could not find user");
+    }
+    sendEmail(
+      user.email,
+      "RESTE PASSWORD",
+      `<a href='http://localhost:5000/auth/forgotPassword/${TOKEN}'></a>`
+    );
+
+    return {
+      message: "email sent successfully, please check you email",
+    };
+  }
+
+  async forgotPasswordReset(
+    token: string,
+    newPassword: string
+  ): Promise<BaseResponse> {
+    let decodedToken;
+
+    // @ts-ignore
+    decodedToken = jwt.verify(token, process.env.SECRET);
+
+    if (!decodedToken) {
+      throw new ExtendedError("token is not valid");
+    }
+
+    // @ts-ignore
+    let userId = decodedToken.sub;
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(newPassword, salt);

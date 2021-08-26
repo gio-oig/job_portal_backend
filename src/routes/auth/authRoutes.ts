@@ -1,4 +1,5 @@
-import { Router, NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import { Router, NextFunction, Request, Response, response } from "express";
 import { AuthResponse, Role } from "../../constants/interfaces";
 import {
   logInValidation,
@@ -56,6 +57,39 @@ const resetPassword = async (
   return res.status(200).json(response);
 };
 
+const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const userId = (req.user as { sub: number }).sub;
+  let response;
+  try {
+    response = await userService.forgotPassword(userId);
+  } catch (error) {
+    return next(new ExtendedError(error.message, 500, error.data));
+  }
+
+  return res.status(200).json(response);
+};
+
+const forgotPasswordReset = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const TOKEN = req.params.token;
+  const { newPassword } = req.body;
+
+  let response;
+  try {
+    response = await userService.forgotPasswordReset(TOKEN, newPassword);
+  } catch (error) {
+    return next(new ExtendedError(error.message, 500, error.data));
+  }
+  return res.status(200).json(response);
+};
+
 /**
  * @authRoutes
  * @prefix /auth
@@ -68,5 +102,8 @@ router.put(
   authorize([Role.ADMIN, Role.HR, Role.USER]),
   resetPassword
 );
+
+router.post("/forgotPassword", authorize(["ALL"]), forgotPassword);
+router.post("/forgotPassword/:token", forgotPasswordReset);
 
 export default router;

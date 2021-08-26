@@ -1,10 +1,9 @@
 import { Role } from "@prisma/client";
-import { NextFunction, Request, response, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { fileUpload } from "../middlewares/fileUpload";
 import { companyValidation } from "../middlewares/validation";
 import { ExtendedError } from "../public/models/ErrorClass";
 import { companyService } from "../service/company";
-import { jobService } from "../service/jobService";
 import { authorize } from "../_helpers/authorization";
 
 const router = Router();
@@ -63,12 +62,11 @@ const getCompanies = async (
  */
 
 router.get("/", getCompanies);
-
 router.post("/", companyValidation, authorize([Role.HR]), createCompany);
+
 /**
  * @description save company images
  */
-
 router.post(
   "/images",
   authorize([Role.HR]),

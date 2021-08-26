@@ -20,9 +20,12 @@ export const authorize = (roles: string[] = []) => {
     jwt({ secret: process.env.SECRET, algorithms: ["HS256"] }),
     // authorize based on user role
     (req: Request, res: Response, next: NextFunction) => {
-      console.log("in");
       console.log(req.user);
       if (roles.length && req.user) {
+        // allowed for all users and still get user id in request object
+        if (roles[0] === "ALL") {
+          return next();
+        }
         // @ts-ignore
         if (!roles.includes(req.user?.role)) {
           // user's role is not authorized

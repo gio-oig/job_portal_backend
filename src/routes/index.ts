@@ -51,6 +51,7 @@ router.get(
 
 /**
  * @baseRoutes
+ * @endpoint http://localhost:5000/api/
  * @prefix /api
  */
 router.post(

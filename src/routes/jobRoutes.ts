@@ -36,6 +36,9 @@ export const createJob = async (
   return res.status(200).json(response);
 };
 
+/**
+ * @endpoint http://localhost:5000/api/job
+ */
 router.post("/", authorize([Role.HR]), createJob);
 
 export default router;
