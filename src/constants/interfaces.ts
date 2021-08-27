@@ -38,3 +38,9 @@ export type MulterFiles =
       [fieldname: string]: Express.Multer.File[];
     }
   | undefined;
+
+export interface JobSearchQuery {
+  title: string;
+  categoryId: number;
+  locationId: number;
+}

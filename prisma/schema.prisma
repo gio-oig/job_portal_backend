@@ -17,7 +17,7 @@ model UserAccount {
   role          Role           @default(USER)
   password      String
   SeekerProfile SeekerProfile?
-  Token         Token?
+  // Token         Token?
   Company       Company[]
 
   @@map(name: "user_accounts")
@@ -86,15 +86,15 @@ model Category {
   @@map("categories")
 }
 
-model Token {
-  id         Int         @id @default(autoincrement())
-  created_at DateTime    @default(now())
-  token      String
-  user_id    Int
-  user       UserAccount @relation(fields: [user_id], references: [id])
+// model Token {
+//   id         Int         @id @default(autoincrement())
+//   created_at DateTime    @default(now())
+//   token      String
+//   user_id    Int
+//   user       UserAccount @relation(fields: [user_id], references: [id])
 
-  @@map("tokens")
-}
+//   @@map("tokens")
+// }
 
 enum Role {
   USER

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { ExtendedError } from "../../public/models/ErrorClass";
 import { Job } from "../../public/models/JobClass";
 import { SeekerProfile } from "../../public/models/SeekerClass";
@@ -22,6 +22,16 @@ class JobRepo {
     } catch (error) {
       console.log(error.message);
       throw new ExtendedError("could not create job");
+    }
+  }
+
+  public async searchJobs(payload: Prisma.JobFindManyArgs) {
+    try {
+      const result = await this.prisma.job.findMany(payload);
+      return result;
+    } catch (error) {
+      console.log(error.message);
+      throw new ExtendedError("server error", 500);
     }
   }
 }

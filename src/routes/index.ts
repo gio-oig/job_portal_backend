@@ -6,6 +6,7 @@ import { userService } from "../service/userService";
 import { authorize } from "../_helpers/authorization";
 import jobRouter from "./jobRoutes";
 import companyRouter from "./companyRoutes";
+import searchRouter from "./searchRoutes";
 
 const router = Router();
 
@@ -62,5 +63,6 @@ router.post(
 );
 router.use("/job", jobRouter);
 router.use("/company", companyRouter);
+router.use("/search", searchRouter);
 
 export default router;
