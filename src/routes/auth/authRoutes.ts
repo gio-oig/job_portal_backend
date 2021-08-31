@@ -94,6 +94,45 @@ const forgotPasswordReset = async (
  * @authRoutes
  * @prefix /auth
  */
+
+/**
+ * @openapi
+ * /auth/signup:
+ *   post:
+ *     description: register user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *                 example: USER, HR
+ *     responses:
+ *       201:
+ *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   exmple: logged in successfully
+ *                 user:
+ *                   type: object
+ *                   description: user object with token
+ *
+ *
+ *
+ *
+ */
 router.post("/signup", registerValidation, signUp);
 router.post("/login", logInValidation, logIn);
 router.put(
@@ -104,6 +143,22 @@ router.put(
 );
 
 router.post("/forgotPassword", authorize(["ALL"]), forgotPassword);
+
+/**
+ * @swagger
+ * /forgotPassword/{token}:
+ *   post:
+ *     summary: Retrieve a single JSONPlaceholder user.
+ *     description: reset password.
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         required: true
+ *         description: token to auth user
+ *         schema:
+ *           type: string
+ */
+
 router.post("/forgotPassword/:token", forgotPasswordReset);
 
 export default router;

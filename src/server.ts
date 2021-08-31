@@ -8,8 +8,27 @@ import { NextFunction } from "connect";
 import BaseRouter from "./routes";
 import AuthRouter from "./routes/auth/authRoutes";
 import { ExtendedError } from "./public/models/ErrorClass";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
 
 const app = express();
+
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Job Portal",
+      version: "1.0.0",
+    },
+  },
+  apis: [
+    "./src/routes/index.ts",
+    "./src/routes/auth/authRoutes.ts",
+    "./src/routes/companyRoutes.ts",
+  ],
+};
+
+const openapiSpecification = swaggerJsdoc(options);
 
 /**
  * @middleware
@@ -28,6 +47,7 @@ app.use(
  */
 app.use("/auth", AuthRouter);
 app.use("/api", BaseRouter);
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 
 /**
  * @description handle incorrect routes
