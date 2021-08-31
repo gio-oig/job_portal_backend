@@ -128,12 +128,27 @@ const forgotPasswordReset = async (
  *                 user:
  *                   type: object
  *                   description: user object with token
- *
- *
- *
- *
+
  */
 router.post("/signup", registerValidation, signUp);
+
+/**
+ * @openapi
+ * /auth/login:
+ *   post:
+ *     description: login user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ */
 router.post("/login", logInValidation, logIn);
 router.put(
   "/resetPassword",

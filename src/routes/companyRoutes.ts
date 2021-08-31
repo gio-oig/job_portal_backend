@@ -62,6 +62,25 @@ const getCompanies = async (
  */
 
 router.get("/", getCompanies);
+/**
+ * @openapi
+ * /api/company:
+ *   post:
+ *     description: create company
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               companyName:
+ *                 type: string
+ *               companyDescription:
+ *                 type: string
+ *               userAccountId:
+ *                 type: number
+ */
 router.post("/", companyValidation, authorize([Role.HR]), createCompany);
 
 /**

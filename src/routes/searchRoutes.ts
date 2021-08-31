@@ -1,11 +1,8 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { ExtendedError } from "../public/models/ErrorClass";
 import { companyService } from "../service/company";
-import { Prisma, PrismaClient } from "@prisma/client";
 import { JobSearchQuery } from "../constants/interfaces";
 import { jobService } from "../service/jobService";
-
-const prisma = new PrismaClient({ log: ["query"] });
 
 const router = Router();
 
