@@ -147,7 +147,8 @@ class UserService {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-    await userRepo.resetPassword(userId, hashedPassword);
+    // @ts-ignore
+    await userRepo.resetPassword(+userId, hashedPassword);
 
     return {
       message: "password updated successfully",
