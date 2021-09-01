@@ -1,12 +1,7 @@
 import { NextFunction } from "connect";
 import { Request, Response } from "express";
 import jwt from "express-jwt";
-
-// declare namespace Express {
-//   export interface Request {
-//     user: string;
-//   }
-// }
+import { ExtendedError } from "../public/models/ErrorClass";
 
 export const authorize = (roles: string[] = []) => {
   // roles param can be a single role string (e.g. Role.User or 'User')
@@ -29,7 +24,7 @@ export const authorize = (roles: string[] = []) => {
         // @ts-ignore
         if (!roles.includes(req.user?.role)) {
           // user's role is not authorized
-          return res.status(401).json({ message: "Unauthorized" });
+          return next(new ExtendedError("Unauthorized", 401));
         }
       }
 
