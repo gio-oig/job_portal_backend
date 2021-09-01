@@ -7,9 +7,8 @@ import { authorize } from "../_helpers/authorization";
 import jobRouter from "./jobRoutes";
 import companyRouter from "./companyRoutes";
 import searchRouter from "./searchRoutes";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import locationRouter from "./locationRoutes";
+import categoryRouter from "./categoryRoutes";
 
 const router = Router();
 
@@ -65,29 +64,10 @@ router.post(
   createSeekerProfile
 );
 
-/**
- * @openapi
- * /api/categories:
- *   get:
- *     description: get all categories
- */
-router.get("/categories", async (req, res) => {
-  const cat = await prisma.category.findMany();
-  return res.status(200).json({ categories: cat });
-});
-/**
- * @openapi
- * /api/locations:
- *   get:
- *     description: get all locations
- */
-router.get("/locaitons", async (req, res) => {
-  const loc = await prisma.jobLocation.findMany();
-  return res.status(200).json({ locations: loc });
-});
-
 router.use("/job", jobRouter);
 router.use("/company", companyRouter);
 router.use("/search", searchRouter);
+router.use("/location", locationRouter);
+router.use("/category", categoryRouter);
 
 export default router;

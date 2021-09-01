@@ -83,5 +83,5 @@ class UserRepo {
 }
 
 export const userRepo = new UserRepo(
-  new PrismaClient({ log: ["query", "info"] })
+  new PrismaClient({ log: ["query", "info", "warn", "error"] })
 );

@@ -59,5 +59,5 @@ class CompanyRepo {
 }
 
 export const companyRepo = new CompanyRepo(
-  new PrismaClient({ log: ["query", "info"] })
+  new PrismaClient({ log: ["query", "info", "warn", "error"] })
 );

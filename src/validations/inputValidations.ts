@@ -1,5 +1,6 @@
 import Joi from "joi";
 import { Role } from "../constants/interfaces";
+import { Validable } from "../middlewares/validation";
 
 export const registerInputValidation = (data: {
   name: string;
@@ -71,6 +72,22 @@ export const resetPasswordDataValidation = (data: {
   const schema = Joi.object({
     oldPassword: Joi.string().min(1).required(),
     newPassword: Joi.string().min(1).required(),
+  }).options({ abortEarly: false });
+  return schema.validate(data);
+};
+
+export const createLocationDataValidation = (data: { city: string }) => {
+  const schema = Joi.object({
+    city: Joi.string().min(2).required(),
+  }).options({ abortEarly: false });
+  return schema.validate(data);
+};
+
+export const createCategoryDataValidation = (data: {
+  name: string;
+}): Joi.ValidationResult => {
+  const schema = Joi.object({
+    name: Joi.string().min(2).required(),
   }).options({ abortEarly: false });
   return schema.validate(data);
 };

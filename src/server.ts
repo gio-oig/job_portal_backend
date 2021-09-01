@@ -25,6 +25,8 @@ const options = {
     "./src/routes/index.ts",
     "./src/routes/auth/authRoutes.ts",
     "./src/routes/companyRoutes.ts",
+    "./src/routes/locationRoutes.ts",
+    "./src/routes/categoryRoutes.ts",
   ],
 };
 
