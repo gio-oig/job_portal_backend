@@ -1,16 +1,16 @@
 import { PrismaClient, Role } from "@prisma/client";
 const prisma = new PrismaClient();
 
-interface user {
-  email: string;
-  role: Role;
-  password: string;
-  SeekerProfile?: { first_name: string; last_name: string };
-  Company?: { company_name: string; company_description: string };
-}
+// interface user {
+//   email: string;
+//   role: Role;
+//   password: string;
+//   SeekerProfile?: { first_name: string; last_name: string };
+//   Company?: { company_name: string; company_description: string };
+// }
 
 async function main() {
-  const users: user[] = [
+  const users = [
     {
       email: "saba@gmail.com",
       role: "USER",
