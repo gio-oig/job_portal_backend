@@ -1,4 +1,9 @@
-import { BaseResponse, Company, MulterFiles } from "../constants/interfaces";
+import {
+  BaseResponse,
+  Company,
+  CompanyFollowable,
+  MulterFiles,
+} from "../constants/interfaces";
 import { Company as CompanyInstance } from "../public/models/CompanyClass";
 import { ExtendedError } from "../public/models/ErrorClass";
 import { companyRepo } from "../repository/company/Company";
@@ -38,7 +43,7 @@ class CompanyService {
       const fileKeys = Object.keys(multerFiles);
       for (const key of fileKeys) {
         //@ts-ignore
-        await companyRepo.saveImages(multerFiles[key].filename, 2);
+        await companyRepo.saveImages(multerFiles[key].filename, companyId);
       }
     } else {
       throw new ExtendedError("could not find images");
@@ -51,6 +56,11 @@ class CompanyService {
     let response = await companyRepo.getCompanies();
 
     return { message: "success", companies: response };
+  }
+
+  async followCompany(params: CompanyFollowable): Promise<BaseResponse> {
+    await companyRepo.followCompany(params);
+    return { message: "success" };
   }
 }
 

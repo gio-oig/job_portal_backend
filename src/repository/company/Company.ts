@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { CompanyFollowable } from "../../constants/interfaces";
 import { Company as CompanyInstance } from "../../public/models/CompanyClass";
 import { ExtendedError } from "../../public/models/ErrorClass";
 
@@ -55,6 +56,20 @@ class CompanyRepo {
 
       return companies;
     } catch (error) {}
+  }
+
+  async followCompany({ companyId, seekerId }: CompanyFollowable) {
+    try {
+      await this.prisma.companyFollower.create({
+        data: {
+          company_id: +companyId,
+          seeker_id: +seekerId,
+        },
+      });
+    } catch (error) {
+      console.log(error.message);
+      throw new ExtendedError("unable to follow, please try again later");
+    }
   }
 }
 

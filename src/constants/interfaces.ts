@@ -44,3 +44,8 @@ export interface JobSearchQuery {
   categoryId: number;
   locationId: number;
 }
+
+export interface CompanyFollowable {
+  companyId: number;
+  seekerId: number;
+}

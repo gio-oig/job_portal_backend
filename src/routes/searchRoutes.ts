@@ -16,7 +16,8 @@ const searchJobs = async (
   try {
     response = await jobService.searchJobs(query);
   } catch (error) {
-    return next(new ExtendedError(error.message));
+    if (error instanceof ExtendedError)
+      return next(new ExtendedError(error.message));
   }
 
   res.status(200).json(response);

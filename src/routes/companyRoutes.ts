@@ -1,12 +1,16 @@
-import { Role } from "@prisma/client";
+import { PrismaClient, Role } from "@prisma/client";
 import { NextFunction, Request, Response, Router } from "express";
+import { BaseResponse } from "../constants/interfaces";
 import { fileUpload } from "../middlewares/fileUpload";
 import { companyValidation } from "../middlewares/validation";
 import { ExtendedError } from "../public/models/ErrorClass";
 import { companyService } from "../service/company";
 import { authorize } from "../_helpers/authorization";
 
+const prisma = new PrismaClient({ log: ["query"] });
+
 const router = Router();
+
 const createCompany = async (
   req: Request,
   res: Response,
@@ -57,11 +61,28 @@ const getCompanies = async (
   res.status(200).json(response);
 };
 
+const followCompany = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { companyId, seekerId } = req.body;
+  let response: BaseResponse;
+  try {
+    response = await companyService.followCompany({ companyId, seekerId });
+  } catch (error) {
+    return next(new ExtendedError(error.message));
+  }
+  res.status(200).json(response);
+};
+
 /**
  * @endpoint http://localhost:5000/api/company
  */
 
 router.get("/", getCompanies);
+
+router.get("/follow", followCompany);
 /**
  * @openapi
  * /api/company:
@@ -84,11 +105,24 @@ router.get("/", getCompanies);
 router.post("/", companyValidation, authorize([Role.HR]), createCompany);
 
 /**
- * @description save company images
+ * @openapi
+ * /api/company:
+ *   post:
+ *     summary: save images for company
+ *     description: save images for company
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               companyName:
+ *                 type: string
  */
 router.post(
   "/images",
-  authorize([Role.HR]),
+  // authorize([Role.HR]),
   fileUpload.array("image"),
   saveCompanyImages
 );

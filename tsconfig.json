@@ -10,10 +10,10 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  // "exclude": [
-  //   "build",
-  //   "prisma",
-  // ],
+  "exclude": [
+    "build",
+    "prisma",
+  ],
   "typeRoots": [
     "@types",
     "./node_modules/@types",

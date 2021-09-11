@@ -24,25 +24,37 @@ model UserAccount {
 }
 
 model SeekerProfile {
-  id              Int         @id @default(autoincrement())
+  id              Int               @id @default(autoincrement())
   first_name      String
   last_name       String
-  user_account    UserAccount @relation(fields: [user_account_id], references: [id])
+  user_account    UserAccount       @relation(fields: [user_account_id], references: [id])
   user_account_id Int
+  CompanyFollower CompanyFollower[]
 
   @@map("seeker_profiles")
 }
 
 model Company {
-  id                  Int            @id @default(autoincrement())
+  id                  Int               @id @default(autoincrement())
   company_name        String
-  company_description String         @db.Text
+  company_description String            @db.Text
   user_account_id     Int
-  user_account        UserAccount    @relation(fields: [user_account_id], references: [id])
+  user_account        UserAccount       @relation(fields: [user_account_id], references: [id])
   Job                 Job[]
   CompanyImage        CompanyImage[]
+  CompanyFollower     CompanyFollower[]
 
   @@map("companies")
+}
+
+model CompanyFollower {
+  company_id Int
+  seeker_id  Int
+  CompanyId  Company       @relation(fields: [company_id], references: [id])
+  SeekerId   SeekerProfile @relation(fields: [seeker_id], references: [id])
+
+  @@id([company_id, seeker_id])
+  @@map("company_followers")
 }
 
 model CompanyImage {
