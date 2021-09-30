@@ -28,6 +28,6 @@ const searchJobs = async (
  * @prefix /api/search
  */
 
-router.post("/job", searchJobs);
+router.get("/job", searchJobs);
 
 export default router;

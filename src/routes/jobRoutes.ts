@@ -31,7 +31,8 @@ export const createJob = async (
       companyId,
     });
   } catch (error) {
-    return next(new ExtendedError(error.message));
+    if (error instanceof ExtendedError)
+      return next(new ExtendedError(error.message));
   }
   return res.status(200).json(response);
 };

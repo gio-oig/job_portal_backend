@@ -2,6 +2,8 @@ import { NextFunction } from "connect";
 import { Request, Response } from "express";
 import jwt from "express-jwt";
 import { ExtendedError } from "../public/models/ErrorClass";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const authorize = (roles: string[] = []) => {
   // roles param can be a single role string (e.g. Role.User or 'User')

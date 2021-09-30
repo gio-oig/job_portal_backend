@@ -41,8 +41,10 @@ export type MulterFiles =
 
 export interface JobSearchQuery {
   title: string;
-  categoryId: number;
-  locationId: number;
+  categoryId?: number;
+  locationId?: number;
+  limit?: number;
+  offset?: number;
 }
 
 export interface CompanyFollowable {

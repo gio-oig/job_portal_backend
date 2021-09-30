@@ -1,5 +1,5 @@
 import { Job as PrismaJob, Prisma } from "@prisma/client";
-import { JobSearchQuery } from "../constants/interfaces";
+import { BaseResponse, JobSearchQuery } from "../constants/interfaces";
 import { Job as JobInstance } from "../public/models/JobClass";
 import { jobRepo } from "../repository/job/Job";
 
@@ -20,7 +20,7 @@ class JobService {
     companyId,
     locationId,
     categoryId,
-  }: Job): Promise<{ message: string; data: PrismaJob }> {
+  }: Job): Promise<BaseResponse> {
     const jobInstance = new JobInstance(
       title,
       description,
@@ -46,12 +46,19 @@ class JobService {
         location: true,
         category: true,
       },
+      orderBy: { created_at: "desc" },
     };
     if (query.categoryId) {
       payload.where!.category_id = +query.categoryId;
     }
     if (query.locationId) {
       payload.where!.location_id = +query.locationId;
+    }
+    if (query.limit) {
+      payload.take = +query.limit;
+    }
+    if (query.offset) {
+      payload.skip = +query.offset;
     }
 
     const result = await jobRepo.searchJobs(payload);
