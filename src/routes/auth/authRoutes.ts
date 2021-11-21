@@ -14,11 +14,13 @@ const router = Router();
 
 const signUp = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password, role } = req.body;
-  let response: AuthResponse;
+  let response;
+
   try {
     response = await userService.signUp(email, password, role);
   } catch (error) {
-    return next(new ExtendedError(error.message));
+    if (error instanceof ExtendedError)
+      return next(new ExtendedError(error.message));
   }
 
   res.status(200).json(response);
@@ -26,11 +28,13 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
 
 const logIn = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
-  let response: AuthResponse;
+  let response;
+
   try {
     response = await userService.logIn(email, password);
   } catch (error) {
-    return next(new ExtendedError(error.message, 500, error.data));
+    if (error instanceof ExtendedError)
+      return next(new ExtendedError(error.message));
   }
 
   return res.status(200).json(response);
@@ -52,8 +56,10 @@ const resetPassword = async (
       newPassword
     );
   } catch (error) {
-    return next(new ExtendedError(error.message, 500, error.data));
+    if (error instanceof ExtendedError)
+      return next(new ExtendedError(error.message));
   }
+
   return res.status(200).json(response);
 };
 
@@ -64,10 +70,12 @@ const forgotPassword = async (
 ) => {
   const userId = (req.user as { sub: number }).sub;
   let response;
+
   try {
     response = await userService.forgotPassword(userId);
   } catch (error) {
-    return next(new ExtendedError(error.message, 500, error.data));
+    if (error instanceof ExtendedError)
+      return next(new ExtendedError(error.message));
   }
 
   return res.status(200).json(response);
@@ -85,7 +93,8 @@ const forgotPasswordReset = async (
   try {
     response = await userService.forgotPasswordReset(TOKEN, newPassword);
   } catch (error) {
-    return next(new ExtendedError(error.message, 500, error.data));
+    if (error instanceof ExtendedError)
+      return next(new ExtendedError(error.message, 500, error.data));
   }
   return res.status(200).json(response);
 };

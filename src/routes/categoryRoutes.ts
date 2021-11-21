@@ -9,11 +9,12 @@ import { authorize } from "../_helpers/authorization";
 const router = Router();
 
 async function getCategories(_: Request, res: Response, next: NextFunction) {
-  let response: BaseResponse;
+  let response;
   try {
     response = await categoryRepo.getCategories();
   } catch (error) {
-    return next(new ExtendedError(error.message));
+    if (error instanceof ExtendedError)
+      return next(new ExtendedError(error.message));
   }
 
   res.status(200).json(response);
@@ -21,11 +22,12 @@ async function getCategories(_: Request, res: Response, next: NextFunction) {
 
 async function createCategory(req: Request, res: Response, next: NextFunction) {
   const { categoryName } = req.body;
-  let response: BaseResponse;
+  let response;
   try {
     response = await categoryRepo.createcategory(categoryName);
   } catch (error) {
-    return next(new ExtendedError(error.message));
+    if (error instanceof ExtendedError)
+      return next(new ExtendedError(error.message));
   }
 
   res.status(200).json(response);
