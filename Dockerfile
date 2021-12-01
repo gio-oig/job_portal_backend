@@ -2,14 +2,14 @@ FROM node:15
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package*.json /app
 
 RUN npm install
 
-COPY ./ ./
+COPY ./ /app
 
-RUN npx prisma migrate dev
-# RUN npx prisma generate
+# RUN npx prisma migrate dev
+RUN npx prisma generate
 
 RUN npm run build
 
@@ -20,4 +20,4 @@ ENV PORT=5000
 
 EXPOSE ${PORT}
 
-CMD node build/server.js
+CMD npm start

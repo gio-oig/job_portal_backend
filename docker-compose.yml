@@ -13,6 +13,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
   web:
     build: .
+    command: npm run dev:watch
     depends_on:
       - postgres
     ports:
@@ -22,5 +23,9 @@ services:
       DATABASE_URL: postgres://postgres@postgres/jobs_dev
       PORT: 5000
       SECRET: "super secret"
+    volumes:
+      - ./:/app/
+      - nodemodules:/app/node_modules
 volumes:
   postgres-data:
+  nodemodules: {}
