@@ -6,7 +6,6 @@ import {
   registerValidation,
   resetPasswordValidation,
 } from "../../middlewares/validation";
-import { ExtendedError } from "../../public/models/ErrorClass";
 import { userService } from "../../service/userService";
 import { authorize } from "../../_helpers/authorization";
 
@@ -19,8 +18,7 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
     response = await userService.signUp(email, password, role);
   } catch (error) {
-    if (error instanceof ExtendedError)
-      return next(new ExtendedError(error.message));
+    return next(error);
   }
 
   res.status(200).json(response);
@@ -33,11 +31,21 @@ const logIn = async (req: Request, res: Response, next: NextFunction) => {
   try {
     response = await userService.logIn(email, password);
   } catch (error) {
-    if (error instanceof ExtendedError)
-      return next(new ExtendedError(error.message));
+    return next(error);
   }
 
   return res.status(200).json(response);
+};
+
+const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
+  let response;
+  try {
+    //@ts-expect-error
+    response = await userService.findUserById(req.user?.sub);
+  } catch (error) {
+    return next(error);
+  }
+  return res.status(200).json({ message: "success", user: response.data });
 };
 
 const resetPassword = async (
@@ -56,8 +64,7 @@ const resetPassword = async (
       newPassword
     );
   } catch (error) {
-    if (error instanceof ExtendedError)
-      return next(new ExtendedError(error.message));
+    return next(error);
   }
 
   return res.status(200).json(response);
@@ -74,8 +81,7 @@ const forgotPassword = async (
   try {
     response = await userService.forgotPassword(userId);
   } catch (error) {
-    if (error instanceof ExtendedError)
-      return next(new ExtendedError(error.message));
+    return next(error);
   }
 
   return res.status(200).json(response);
@@ -93,8 +99,7 @@ const forgotPasswordReset = async (
   try {
     response = await userService.forgotPasswordReset(TOKEN, newPassword);
   } catch (error) {
-    if (error instanceof ExtendedError)
-      return next(new ExtendedError(error.message, 500, error.data));
+    return next(error);
   }
   return res.status(200).json(response);
 };
@@ -165,6 +170,8 @@ router.put(
   authorize([Role.ADMIN, Role.HR, Role.USER]),
   resetPassword
 );
+
+router.post("/isLoggedIn", authorize(), isLoggedIn);
 
 router.post("/forgotPassword", authorize(["ALL"]), forgotPassword);
 

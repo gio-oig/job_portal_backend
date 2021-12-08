@@ -3,7 +3,7 @@ import { BaseResponse } from "../../constants/interfaces";
 import { ExtendedError } from "../../public/models/ErrorClass";
 
 console.log("create prisma instance in CategoryRepo folder");
-const prisma = new PrismaClient({ log: ["info", "error", "query", "warn"] });
+const prisma = new PrismaClient({ log: ["error", "warn"] });
 
 class CategoryRepo {
   /**
@@ -34,11 +34,33 @@ class CategoryRepo {
         },
       });
     } catch (error) {
-      console.log(error.message);
       throw new ExtendedError("could not create category");
     }
 
     return { message: "category created successfully" };
+  }
+
+  public async updateCategory(id: number, name: string) {
+    try {
+      await prisma.category.update({
+        where: {
+          id: id,
+        },
+        data: {
+          name: name,
+        },
+      });
+    } catch (error) {
+      throw new ExtendedError("could not update category");
+    }
+  }
+
+  public async deleteCategory(id: number) {
+    try {
+      await prisma.category.delete({ where: { id: id } });
+    } catch (error) {
+      throw new ExtendedError("could not delete category");
+    }
   }
 }
 

@@ -14,6 +14,15 @@ import { SeekerProfile } from "../public/models/SeekerClass";
 import { sendEmail } from "../_helpers/sendEmail";
 
 class UserService {
+  async findUserById(userId: number): Promise<BaseResponse> {
+    let user = await userRepo.findUserById(userId);
+
+    return {
+      message: "success",
+      data: user,
+    };
+  }
+
   async createSeekerProfile(
     userId: number,
     firstName: string,

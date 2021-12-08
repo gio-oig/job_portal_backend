@@ -39,11 +39,19 @@ class UserRepo {
   }
 
   public async findUserById(userId: number) {
-    const existingUser = await this.prisma.userAccount.findUnique({
-      where: { id: userId },
-    });
+    try {
+      const existingUser = await this.prisma.userAccount.findUnique({
+        where: { id: userId },
+      });
 
-    return existingUser;
+      if (!existingUser) {
+        throw new ExtendedError("could not find password");
+      }
+
+      return existingUser;
+    } catch (error) {
+      throw new ExtendedError("please try again later");
+    }
   }
 
   public async resetPassword(userId: number, updatedPassword: string) {
@@ -74,7 +82,6 @@ class UserRepo {
 
       return seekerProfile;
     } catch (error) {
-      console.log(error.message);
       throw new ExtendedError(
         "Unable to create seeker profile, please try again later."
       );
@@ -83,5 +90,5 @@ class UserRepo {
 }
 
 export const userRepo = new UserRepo(
-  new PrismaClient({ log: ["query", "info", "warn", "error"] })
+  new PrismaClient({ log: ["error", "warn"] })
 );

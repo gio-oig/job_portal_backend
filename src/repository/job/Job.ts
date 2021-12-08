@@ -36,5 +36,5 @@ class JobRepo {
 }
 
 export const jobRepo = new JobRepo(
-  new PrismaClient({ log: ["query", "info", "warn", "error"] })
+  new PrismaClient({ log: ["error", "warn"] })
 );

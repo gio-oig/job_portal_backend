@@ -21,16 +21,38 @@ async function getCategories(_: Request, res: Response, next: NextFunction) {
 }
 
 async function createCategory(req: Request, res: Response, next: NextFunction) {
-  const { categoryName } = req.body;
+  const { name } = req.body;
   let response;
   try {
-    response = await categoryRepo.createcategory(categoryName);
+    response = await categoryRepo.createcategory(name);
   } catch (error) {
     if (error instanceof ExtendedError)
       return next(new ExtendedError(error.message));
   }
 
   res.status(200).json(response);
+}
+
+async function updateCategory(req: Request, res: Response, next: NextFunction) {
+  const { id } = req.params;
+  const { name } = req.body;
+  try {
+    await categoryRepo.updateCategory(+id, name);
+  } catch (error) {
+    return next(error);
+  }
+  return res.json({ message: "success" });
+}
+
+async function deleteCategory(req: Request, res: Response, next: NextFunction) {
+  const { id } = req.params;
+  try {
+    await categoryRepo.deleteCategory(+id);
+  } catch (error) {
+    return next(error);
+  }
+
+  return res.json({ message: "success" });
 }
 
 /**
@@ -41,6 +63,9 @@ async function createCategory(req: Request, res: Response, next: NextFunction) {
  *     description: get all categories.
  */
 router.get("/", getCategories);
+
+router.put("/update/:id", updateCategory);
+router.delete("/delete/:id", deleteCategory);
 
 /**
  * @swagger
@@ -60,8 +85,8 @@ router.get("/", getCategories);
  */
 router.post(
   "/",
-  authorize([Role.ADMIN]),
-  createCategoryValidation,
+  // authorize([Role.ADMIN]),
+  // createCategoryValidation,
   createCategory
 );
 

@@ -3,11 +3,8 @@ import { NextFunction, Request, Response, Router } from "express";
 import { BaseResponse } from "../constants/interfaces";
 import { fileUpload } from "../middlewares/fileUpload";
 import { companyValidation } from "../middlewares/validation";
-import { ExtendedError } from "../public/models/ErrorClass";
 import { companyService } from "../service/company";
 import { authorize } from "../_helpers/authorization";
-
-const prisma = new PrismaClient({ log: ["query"] });
 
 const router = Router();
 
@@ -25,7 +22,7 @@ const createCompany = async (
       user_account_id: userAccountId,
     });
   } catch (error) {
-    return next(new ExtendedError(error.message));
+    return next(error);
   }
   return res.status(200).json(response);
 };
@@ -40,7 +37,7 @@ const saveCompanyImages = async (
   try {
     response = await companyService.saveImages(req.files, +companyId, +userId);
   } catch (error) {
-    return next(new ExtendedError(error.message));
+    return next(error);
   }
 
   res.status(200).json(response);
@@ -55,7 +52,7 @@ const getCompanies = async (
   try {
     response = await companyService.getCompanies();
   } catch (error) {
-    return next(new ExtendedError(error.message));
+    return next(error);
   }
 
   res.status(200).json(response);
@@ -71,7 +68,7 @@ const followCompany = async (
   try {
     response = await companyService.followCompany({ companyId, seekerId });
   } catch (error) {
-    return next(new ExtendedError(error.message));
+    return next(error);
   }
   res.status(200).json(response);
 };

@@ -67,12 +67,11 @@ class CompanyRepo {
         },
       });
     } catch (error) {
-      console.log(error.message);
       throw new ExtendedError("unable to follow, please try again later");
     }
   }
 }
 
 export const companyRepo = new CompanyRepo(
-  new PrismaClient({ log: ["query", "info", "warn", "error"] })
+  new PrismaClient({ log: ["error", "warn"] })
 );
