@@ -1,5 +1,6 @@
-import multer from "multer";
-import { v4 as uuid } from "uuid";
+import { Request } from "express";
+import multer, { FileFilterCallback, Multer } from "multer";
+import { nanoid } from "nanoid";
 
 const MIME_TYPE_MAP = {
   "image/png": "png",
@@ -7,33 +8,45 @@ const MIME_TYPE_MAP = {
   "image/jpg": "jpg",
 };
 
-export const fileUpload = multer({
-  //   limits: 50000,
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      // null is the place for error
-      cb(null, "uploads/images");
-    },
-    filename: (req, file, cb) => {
-      // set file extention
-      console.log("filename section");
-      console.dir(file);
-      // @ts-ignore
-      const extension = MIME_TYPE_MAP[file.mimetype];
-      // create file name
-      cb(null, uuid() + "." + extension);
-    },
-  }),
-  fileFilter: (req, file, cb) => {
-    // check if file type is acceptable or not -> true/false
-    // @ts-ignore
-    const isValid = !!MIME_TYPE_MAP[file.mimetype];
-    const error = isValid ? null : new Error("Invalid mime type!");
-    console.log("error section");
-    console.log(error);
-    console.log("is valid");
-    console.log(isValid);
-    // @ts-ignore
-    cb(error, isValid);
+const storage = multer.diskStorage({
+  destination: (
+    req: Request,
+    file: Express.Multer.File,
+    cb: (error: Error | null, destination: string) => void
+  ) => {
+    // null is the place for error
+    cb(null, "uploads/images");
+  },
+  filename: (
+    req: Request,
+    file: Express.Multer.File,
+    cb: (error: Error | null, filename: string) => void
+  ) => {
+    // set file extention
+    // @ts-expect-error
+    const extension = MIME_TYPE_MAP[file.mimetype];
+    // create file name
+    cb(null, nanoid() + "." + extension);
   },
 });
+
+const filter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback
+) => {
+  // check if file type is acceptable or not -> true/
+  // @ts-expect-error
+  const isValid = !!MIME_TYPE_MAP[file.mimetype];
+  const error = isValid ? null : new Error("Invalid mime type!");
+  //   cb(null, isValid);
+  if (isValid) {
+    cb(null, isValid);
+  } else {
+    cb(new Error("Invalid mime type!"));
+  }
+};
+
+const upload: Multer = multer({ storage: storage, fileFilter: filter });
+
+export default upload;

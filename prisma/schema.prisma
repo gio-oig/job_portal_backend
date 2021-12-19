@@ -28,7 +28,7 @@ model SeekerProfile {
   first_name      String
   last_name       String
   user_account    UserAccount       @relation(fields: [user_account_id], references: [id])
-  user_account_id Int
+  user_account_id Int               @unique
   CompanyFollower CompanyFollower[]
 
   @@map("seeker_profiles")
@@ -75,10 +75,13 @@ model Job {
   creator_id      Int
   location_id     Int
   category_id     Int
+  schedule_id     Int         @unique
   creator         Company     @relation(fields: [creator_id], references: [id])
   location        JobLocation @relation(fields: [location_id], references: [id])
   category        Category    @relation(fields: [category_id], references: [id])
+  schedule        JobSchedule @relation(fields: [schedule_id], references: [id])
 
+  tags tag[]
   @@map("jobs")
 }
 
@@ -96,6 +99,22 @@ model Category {
   Job  Job[]
 
   @@map("categories")
+}
+
+model JobSchedule {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(255)
+  Job  Job?
+
+  @@map("job_scedules")
+}
+
+model tag {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(255)
+  Job  Job[]
+
+  @@map("tags")
 }
 
 // model Token {
