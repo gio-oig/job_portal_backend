@@ -38,6 +38,8 @@ model Company {
   id                  Int               @id @default(autoincrement())
   company_name        String
   company_description String            @db.Text
+  avatar              String
+  avatar_id           String
   user_account_id     Int
   user_account        UserAccount       @relation(fields: [user_account_id], references: [id])
   Job                 Job[]

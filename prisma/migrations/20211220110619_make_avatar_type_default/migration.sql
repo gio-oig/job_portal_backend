@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "companies" ALTER COLUMN "avatar" SET DATA TYPE TEXT,
+ALTER COLUMN "avatar_id" SET DATA TYPE TEXT;

@@ -1,7 +1,7 @@
 import { PrismaClient, Role } from "@prisma/client";
 import { NextFunction, Request, Response, Router } from "express";
 import { BaseResponse } from "../constants/interfaces";
-import { fileUpload } from "../middlewares/fileUpload";
+import upload from "../middlewares/fileUpload";
 import { companyValidation } from "../middlewares/validation";
 import { companyService } from "../service/company";
 import { authorize } from "../_helpers/authorization";
@@ -120,7 +120,7 @@ router.post("/", companyValidation, authorize([Role.HR]), createCompany);
 router.post(
   "/images",
   // authorize([Role.HR]),
-  fileUpload.array("image"),
+  upload.array("image"),
   saveCompanyImages
 );
 

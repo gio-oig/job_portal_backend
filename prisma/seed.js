@@ -42,6 +42,8 @@ async function main() {
   ];
   const locations = ["Tbilisi", "Senaki", "Kutaisi", "Batumi"];
   const categories = ["Security", "Information Technology", "Engineering"];
+  const schedules = ["part-time", "full-time"];
+  const tags = ["frontend", "backend", "javascript", "flutter"];
 
   for (let location of locations) {
     await prisma.jobLocation.create({
@@ -59,6 +61,22 @@ async function main() {
     });
   }
 
+  for (let sched of schedules) {
+    await prisma.jobSchedule.create({
+      data: {
+        name: sched,
+      },
+    });
+  }
+
+  for (let tag of tags) {
+    await prisma.tag.create({
+      data: {
+        name: tag,
+      },
+    });
+  }
+
   for (let user of users) {
     if (user.role === "HR" && user.Company) {
       await prisma.userAccount.create({
@@ -70,6 +88,8 @@ async function main() {
             create: {
               company_name: user.Company.company_name,
               company_description: user.Company.company_description,
+              avatar: "avatart url",
+              avatar_id: "av id",
             },
           },
         },
