@@ -10,8 +10,16 @@ import {
   incorrectRouteHandler,
   mainErrorhandler,
 } from "./_helpers/errorHandler";
+import { v2 as cloudinary } from "cloudinary";
+// import cloudinaryConfig from "./cloudinary";
 
 const app = express();
+
+export default cloudinary.config({
+  cloud_name: "deng7tucv",
+  api_key: "145569667189166",
+  api_secret: "l8UMquWPL9jPFlI8xO8oPl0liuM",
+});
 
 const options = {
   definition: {
@@ -35,6 +43,7 @@ const openapiSpecification = swaggerJsdoc(options);
 /**
  * @middleware
  */
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan("common"));
 app.use(cors());

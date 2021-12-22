@@ -30,6 +30,7 @@ export interface Company {
   company_name: string;
   company_description: string;
   user_account_id: number;
+  avatar: Buffer | undefined;
 }
 
 export type MulterFiles =
@@ -51,3 +52,19 @@ export interface CompanyFollowable {
   companyId: number;
   seekerId: number;
 }
+
+export type UploadResponse = {
+  imagePath: string;
+  imageId: string;
+};
+
+export type CopyWithPartial<T, K extends keyof T> = Omit<T, K> & Partial<T>;
+
+type A = {
+  id: string;
+  path: string;
+};
+
+type Partial<T> = {
+  [P in keyof T]?: T[P];
+};

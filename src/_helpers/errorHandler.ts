@@ -19,15 +19,6 @@ export const mainErrorhandler = (
   console.log("error handler route");
   // delete image if we got an error
   // multer adds file property to request object
-  if (req.file) {
-    fs.unlink(req.file.path, (err) => console.log(err));
-  } else if (req.files) {
-    const fileKeys = Object.keys(req.files);
-    fileKeys.forEach((key) => {
-      //@ts-ignore
-      fs.unlink(req.files[key].path, (err) => console.log(err));
-    });
-  }
 
   const errorObject: { message: string; error?: object } = {
     message: error.message,

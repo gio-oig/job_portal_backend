@@ -47,6 +47,10 @@ const filter = (
   }
 };
 
+const multerMemoryStorage = multer.memoryStorage();
+
+export const multerMemoryUpload = multer({ storage: multerMemoryStorage });
+
 const upload: Multer = multer({ storage: storage, fileFilter: filter });
 
 export default upload;

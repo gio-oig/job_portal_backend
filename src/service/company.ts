@@ -3,21 +3,32 @@ import {
   Company,
   CompanyFollowable,
   MulterFiles,
+  UploadResponse,
 } from "../constants/interfaces";
 import { Company as CompanyInstance } from "../public/models/CompanyClass";
 import { ExtendedError } from "../public/models/ErrorClass";
 import { companyRepo } from "../repository/company/Company";
+import { imageUpload } from "./imageUpload";
 
 class CompanyService {
   async createCompany({
     company_name,
     company_description,
     user_account_id,
+    avatar,
   }: Company): Promise<BaseResponse> {
+    let uploadedImage: UploadResponse | undefined;
+
+    if (avatar) {
+      uploadedImage = await imageUpload.uploadStream(avatar, "avatar");
+    }
+
     const companyInstance = new CompanyInstance(
       company_name,
       company_description,
-      user_account_id
+      user_account_id,
+      uploadedImage ? uploadedImage.imagePath : "",
+      uploadedImage ? uploadedImage.imageId : ""
     );
     const response = await companyRepo.createCompany(companyInstance);
 

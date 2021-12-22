@@ -1,7 +1,7 @@
 import { PrismaClient, Role } from "@prisma/client";
 import { NextFunction, Request, Response, Router } from "express";
 import { BaseResponse } from "../constants/interfaces";
-import upload from "../middlewares/fileUpload";
+import upload, { multerMemoryUpload } from "../middlewares/fileUpload";
 import { companyValidation } from "../middlewares/validation";
 import { companyService } from "../service/company";
 import { authorize } from "../_helpers/authorization";
@@ -13,13 +13,15 @@ const createCompany = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { companyName, companyDescription, userAccountId } = req.body;
+  const { companyName, companyDescription, userAccountId, avatar } = req.body;
+
   let response;
   try {
     response = await companyService.createCompany({
       company_name: companyName,
       company_description: companyDescription,
-      user_account_id: userAccountId,
+      user_account_id: +userAccountId,
+      avatar: req.file?.buffer,
     });
   } catch (error) {
     return next(error);
@@ -99,7 +101,15 @@ router.get("/follow", followCompany);
  *               userAccountId:
  *                 type: number
  */
-router.post("/", companyValidation, authorize([Role.HR]), createCompany);
+router.post(
+  "/",
+  multerMemoryUpload.single("avatar"),
+  companyValidation,
+  // authorize([Role.HR]),
+
+  // multerMemoryUpload.array("avatar", 1),
+  createCompany
+);
 
 /**
  * @openapi

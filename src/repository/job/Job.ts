@@ -15,6 +15,7 @@ class JobRepo {
           creator_id: job.creator_id,
           location_id: job.location_id,
           category_id: job.category_id,
+          schedule_id: 1,
         },
       });
       return createdJob;

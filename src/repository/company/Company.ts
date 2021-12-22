@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import { CompanyFollowable } from "../../constants/interfaces";
+import { Company, PrismaClient } from "@prisma/client";
+import { CompanyFollowable, CopyWithPartial } from "../../constants/interfaces";
 import { Company as CompanyInstance } from "../../public/models/CompanyClass";
 import { ExtendedError } from "../../public/models/ErrorClass";
 
@@ -13,11 +13,14 @@ class CompanyRepo {
           company_name: company.company_name,
           company_description: company.company_description,
           user_account_id: company.user_account_id,
+          avatar: company.avatar,
+          avatar_id: company.avatar_id,
         },
       });
 
       return createdCompany;
     } catch (error) {
+      console.log(error);
       throw new ExtendedError("could not create company");
     }
   }
