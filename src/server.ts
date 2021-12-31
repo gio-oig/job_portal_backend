@@ -11,7 +11,6 @@ import {
   mainErrorhandler,
 } from "./_helpers/errorHandler";
 import { v2 as cloudinary } from "cloudinary";
-// import cloudinaryConfig from "./cloudinary";
 
 const app = express();
 

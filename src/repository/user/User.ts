@@ -13,8 +13,6 @@ class UserRepo {
         where: { email: userObj.email },
       });
 
-      // console.log("checkIfUserExists");
-
       if (existingUser) {
         throw new ExtendedError("User Already exists");
       }

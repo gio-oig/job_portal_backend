@@ -1,4 +1,4 @@
-import { Company, PrismaClient } from "@prisma/client";
+import { Company, prisma, PrismaClient } from "@prisma/client";
 import { CompanyFollowable, CopyWithPartial } from "../../constants/interfaces";
 import { Company as CompanyInstance } from "../../public/models/CompanyClass";
 import { ExtendedError } from "../../public/models/ErrorClass";
@@ -58,7 +58,11 @@ class CompanyRepo {
       });
 
       return companies;
-    } catch (error) {}
+    } catch (error) {
+      throw new ExtendedError(
+        "could not get companies, please try again later"
+      );
+    }
   }
 
   async followCompany({ companyId, seekerId }: CompanyFollowable) {
@@ -71,6 +75,16 @@ class CompanyRepo {
       });
     } catch (error) {
       throw new ExtendedError("unable to follow, please try again later");
+    }
+  }
+
+  async deleteOne(id: number) {
+    try {
+      await this.prisma.company.delete({ where: { id } });
+    } catch (error) {
+      throw new ExtendedError(
+        "could not delete company, please try again later"
+      );
     }
   }
 }

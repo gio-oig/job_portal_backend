@@ -5,6 +5,7 @@ import searchRouter from "./searchRoutes";
 import locationRouter from "./locationRoutes";
 import categoryRouter from "./categoryRoutes";
 import seekerRouter from "./seekerRoutes";
+import scheduleRouter from "./schedule.route";
 
 const router = Router();
 
@@ -20,6 +21,7 @@ router.use("/company", companyRouter);
 router.use("/seeker", seekerRouter);
 router.use("/location", locationRouter);
 router.use("/category", categoryRouter);
+router.use("/schedule", scheduleRouter);
 
 export default router;
 

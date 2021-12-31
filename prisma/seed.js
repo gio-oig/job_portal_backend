@@ -42,7 +42,7 @@ async function main() {
   ];
   const locations = ["Tbilisi", "Senaki", "Kutaisi", "Batumi"];
   const categories = ["Security", "Information Technology", "Engineering"];
-  const schedules = ["part-time", "full-time"];
+  const schedules = ["Part time", "Full time"];
   const tags = ["frontend", "backend", "javascript", "flutter"];
 
   for (let location of locations) {
@@ -88,8 +88,6 @@ async function main() {
             create: {
               company_name: user.Company.company_name,
               company_description: user.Company.company_description,
-              avatar: "avatart url",
-              avatar_id: "av id",
             },
           },
         },

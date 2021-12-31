@@ -16,7 +16,7 @@ class CompanyService {
     company_description,
     user_account_id,
     avatar,
-  }: Company): Promise<BaseResponse> {
+  }: Company) {
     let uploadedImage: UploadResponse | undefined;
 
     if (avatar) {
@@ -30,9 +30,9 @@ class CompanyService {
       uploadedImage ? uploadedImage.imagePath : "",
       uploadedImage ? uploadedImage.imageId : ""
     );
-    const response = await companyRepo.createCompany(companyInstance);
+    const company = await companyRepo.createCompany(companyInstance);
 
-    return { message: "company created successfully", data: response };
+    return company;
   }
 
   async saveImages(
@@ -64,14 +64,19 @@ class CompanyService {
   }
 
   async getCompanies() {
-    let response = await companyRepo.getCompanies();
+    let companies = await companyRepo.getCompanies();
 
-    return { message: "success", companies: response };
+    return companies;
   }
 
-  async followCompany(params: CompanyFollowable): Promise<BaseResponse> {
+  async followCompany(params: CompanyFollowable) {
     await companyRepo.followCompany(params);
-    return { message: "success" };
+    return true;
+  }
+
+  async deleteOne(id: number) {
+    await companyRepo.deleteOne(id);
+    return true;
   }
 }
 

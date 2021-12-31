@@ -1,3 +1,5 @@
+import { Job } from "@prisma/client";
+
 export interface ValidationError {
   [item: string]: string;
 }
@@ -68,3 +70,5 @@ type A = {
 type Partial<T> = {
   [P in keyof T]?: T[P];
 };
+
+export interface IJob extends Omit<Job, "id" | "created_at"> {}

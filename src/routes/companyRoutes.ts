@@ -1,6 +1,7 @@
 import { PrismaClient, Role } from "@prisma/client";
 import { NextFunction, Request, Response, Router } from "express";
 import { BaseResponse } from "../constants/interfaces";
+import companyController from "../controller/company.controller";
 import upload, { multerMemoryUpload } from "../middlewares/fileUpload";
 import { companyValidation } from "../middlewares/validation";
 import { companyService } from "../service/company";
@@ -8,80 +9,13 @@ import { authorize } from "../_helpers/authorization";
 
 const router = Router();
 
-const createCompany = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { companyName, companyDescription, userAccountId, avatar } = req.body;
-
-  let response;
-  try {
-    response = await companyService.createCompany({
-      company_name: companyName,
-      company_description: companyDescription,
-      user_account_id: +userAccountId,
-      avatar: req.file?.buffer,
-    });
-  } catch (error) {
-    return next(error);
-  }
-  return res.status(200).json(response);
-};
-
-const saveCompanyImages = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { companyId, userId } = req.body;
-  let response;
-  try {
-    response = await companyService.saveImages(req.files, +companyId, +userId);
-  } catch (error) {
-    return next(error);
-  }
-
-  res.status(200).json(response);
-};
-
-const getCompanies = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  let response;
-  try {
-    response = await companyService.getCompanies();
-  } catch (error) {
-    return next(error);
-  }
-
-  res.status(200).json(response);
-};
-
-const followCompany = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { companyId, seekerId } = req.body;
-  let response: BaseResponse;
-  try {
-    response = await companyService.followCompany({ companyId, seekerId });
-  } catch (error) {
-    return next(error);
-  }
-  res.status(200).json(response);
-};
-
 /**
  * @endpoint http://localhost:5000/api/company
  */
 
-router.get("/", getCompanies);
+router.get("/", companyController.getAll);
 
-router.get("/follow", followCompany);
+router.get("/follow", companyController.follow);
 /**
  * @openapi
  * /api/company:
@@ -105,10 +39,9 @@ router.post(
   "/",
   multerMemoryUpload.single("avatar"),
   companyValidation,
-  // authorize([Role.HR]),
-
+  authorize([Role.HR]),
   // multerMemoryUpload.array("avatar", 1),
-  createCompany
+  companyController.create
 );
 
 /**
@@ -131,7 +64,9 @@ router.post(
   "/images",
   // authorize([Role.HR]),
   upload.array("image"),
-  saveCompanyImages
+  companyController.saveCompanyImages
 );
+
+router.delete("/:id", authorize(Role.HR), companyController.deleteOne);
 
 export default router;

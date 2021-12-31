@@ -3,6 +3,10 @@ import { UploadResponse } from "../constants/interfaces";
 import fs from "fs";
 import streamifier from "streamifier";
 
+interface IImageUpload {
+  imagePath: string;
+  imageId: string;
+}
 class ImageUpload {
   async upload(path: string): Promise<UploadResponse> {
     let res: UploadApiResponse;
@@ -23,10 +27,10 @@ class ImageUpload {
   }
 
   async uploadStream(buffer: Buffer, folder: string) {
-    return new Promise<any>((resolve, reject) => {
+    return new Promise<IImageUpload>((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
-          folder: "avatar",
+          folder: folder,
         },
         (error, result) => {
           if (result) {

@@ -1,108 +1,15 @@
 import jwt from "jsonwebtoken";
-import { Router, NextFunction, Request, Response, response } from "express";
+import { Router } from "express";
 import { AuthResponse, Role } from "../../constants/interfaces";
 import {
   logInValidation,
   registerValidation,
   resetPasswordValidation,
 } from "../../middlewares/validation";
-import { userService } from "../../service/userService";
+import userContoller from "../../controller/user.contoller";
 import { authorize } from "../../_helpers/authorization";
 
 const router = Router();
-
-const signUp = async (req: Request, res: Response, next: NextFunction) => {
-  const { email, password, role } = req.body;
-  let response;
-
-  try {
-    response = await userService.signUp(email, password, role);
-  } catch (error) {
-    return next(error);
-  }
-
-  res.status(200).json(response);
-};
-
-const logIn = async (req: Request, res: Response, next: NextFunction) => {
-  const { email, password } = req.body;
-  let response;
-
-  try {
-    response = await userService.logIn(email, password);
-  } catch (error) {
-    return next(error);
-  }
-
-  return res.status(200).json(response);
-};
-
-const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
-  let response;
-  try {
-    //@ts-expect-error
-    response = await userService.findUserById(req.user?.sub);
-  } catch (error) {
-    return next(error);
-  }
-  return res.status(200).json({ message: "success", user: response.data });
-};
-
-const resetPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const userId = (req.user as { sub: number }).sub;
-  const { oldPassword, newPassword } = req.body;
-
-  let response;
-  try {
-    response = await userService.resetPassword(
-      userId,
-      oldPassword,
-      newPassword
-    );
-  } catch (error) {
-    return next(error);
-  }
-
-  return res.status(200).json(response);
-};
-
-const forgotPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const userId = (req.user as { sub: number }).sub;
-  let response;
-
-  try {
-    response = await userService.forgotPassword(userId);
-  } catch (error) {
-    return next(error);
-  }
-
-  return res.status(200).json(response);
-};
-
-const forgotPasswordReset = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const TOKEN = req.params.token;
-  const { newPassword } = req.body;
-
-  let response;
-  try {
-    response = await userService.forgotPasswordReset(TOKEN, newPassword);
-  } catch (error) {
-    return next(error);
-  }
-  return res.status(200).json(response);
-};
 
 /**
  * @authRoutes
@@ -144,7 +51,7 @@ const forgotPasswordReset = async (
  *                   description: user object with token
 
  */
-router.post("/signup", registerValidation, signUp);
+router.post("/signup", registerValidation, userContoller.signUp);
 
 /**
  * @openapi
@@ -163,17 +70,21 @@ router.post("/signup", registerValidation, signUp);
  *               password:
  *                 type: string
  */
-router.post("/login", logInValidation, logIn);
+router.post("/login", logInValidation, userContoller.login);
 router.put(
   "/resetPassword",
   resetPasswordValidation,
   authorize([Role.ADMIN, Role.HR, Role.USER]),
-  resetPassword
+  userContoller.resetPassword
 );
 
-router.post("/isLoggedIn", authorize(), isLoggedIn);
+router.post("/isLoggedIn", authorize(), userContoller.isLoggedIn);
 
-router.post("/forgotPassword", authorize(["ALL"]), forgotPassword);
+router.post(
+  "/forgotPassword",
+  authorize(["ALL"]),
+  userContoller.forgotPassword
+);
 
 /**
  * @swagger
@@ -190,6 +101,6 @@ router.post("/forgotPassword", authorize(["ALL"]), forgotPassword);
  *           type: string
  */
 
-router.post("/forgotPassword/:token", forgotPasswordReset);
+router.post("/forgotPassword/:token", userContoller.forgotPasswordReset);
 
 export default router;

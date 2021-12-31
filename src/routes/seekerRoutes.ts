@@ -1,7 +1,9 @@
+import { SeekerProfile } from "@prisma/client";
 import { NextFunction, Request, Response, Router } from "express";
 import { AuthResponse, Role, SeekerResponse } from "../constants/interfaces";
 import { seekerValidation } from "../middlewares/validation";
 import { ExtendedError } from "../public/models/ErrorClass";
+import seekerProfileServise from "../service/seekerProfileServise";
 import { userService } from "../service/userService";
 import { authorize } from "../_helpers/authorization";
 
@@ -24,16 +26,25 @@ const createSeekerProfile = async (
       )
     );
   }
-  let response: SeekerResponse;
+
+  let seekerProfile: SeekerProfile;
   try {
-    response = await userService.createSeekerProfile(
+    seekerProfile = await seekerProfileServise.createSeekerProfile(
       userId,
       firstName,
       lastName
     );
   } catch (error) {
-    return next(new ExtendedError(error.message));
+    if (error instanceof ExtendedError)
+      return next(new ExtendedError(error.message));
+
+    return next(error);
   }
+
+  let response = {
+    message: "seeker profile created successfully",
+    data: seekerProfile,
+  };
 
   res.status(200).json(response);
 };

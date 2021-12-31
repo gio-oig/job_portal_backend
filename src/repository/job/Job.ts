@@ -1,11 +1,32 @@
 import { Prisma, PrismaClient } from "@prisma/client";
+import { IJob } from "../../constants/interfaces";
 import { ExtendedError } from "../../public/models/ErrorClass";
-import { Job } from "../../public/models/JobClass";
 
 class JobRepo {
   constructor(private prisma: PrismaClient) {}
+  async getAll() {
+    try {
+      const jobs = await this.prisma.job.findMany({
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          expiration_date: true,
+          category: true,
+          creator: true,
+          location: true,
+          schedule: true,
+          tags: true,
+        },
+      });
+      return jobs;
+    } catch (error) {
+      if (error instanceof Error) console.log(error.message);
+      throw new ExtendedError("could not create job");
+    }
+  }
 
-  public async createNewJob(job: Job) {
+  async createNewJob(job: IJob) {
     try {
       const createdJob = await this.prisma.job.create({
         data: {
@@ -15,7 +36,7 @@ class JobRepo {
           creator_id: job.creator_id,
           location_id: job.location_id,
           category_id: job.category_id,
-          schedule_id: 1,
+          schedule_id: job.schedule_id,
         },
       });
       return createdJob;
@@ -25,7 +46,7 @@ class JobRepo {
     }
   }
 
-  public async searchJobs(payload: Prisma.JobFindManyArgs) {
+  async searchJobs(payload: Prisma.JobFindManyArgs) {
     try {
       const result = await this.prisma.job.findMany(payload);
       return result;

@@ -1,40 +1,17 @@
 import { Job as PrismaJob, Prisma } from "@prisma/client";
-import { BaseResponse, JobSearchQuery } from "../constants/interfaces";
-import { Job as JobInstance } from "../public/models/JobClass";
+import { BaseResponse, IJob, JobSearchQuery } from "../constants/interfaces";
 import { jobRepo } from "../repository/job/Job";
 
-interface Job {
-  title: string;
-  description: string;
-  expirationDate: string;
-  companyId: number;
-  locationId: number;
-  categoryId: number;
-}
-
 class JobService {
-  async createjob({
-    title,
-    description,
-    expirationDate,
-    companyId,
-    locationId,
-    categoryId,
-  }: Job): Promise<BaseResponse> {
-    const jobInstance = new JobInstance(
-      title,
-      description,
-      expirationDate,
-      companyId,
-      locationId,
-      categoryId
-    );
-    const responce = await jobRepo.createNewJob(jobInstance);
+  async getAll() {
+    const jobs = await jobRepo.getAll();
+    return jobs;
+  }
 
-    return {
-      message: "job created successfully",
-      data: responce,
-    };
+  async createjob(obj: IJob) {
+    const job = await jobRepo.createNewJob(obj);
+
+    return job;
   }
 
   async searchJobs(query: JobSearchQuery) {
