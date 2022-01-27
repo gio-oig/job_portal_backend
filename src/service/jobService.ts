@@ -19,31 +19,38 @@ class JobService {
       where: {
         title: { contains: query.title || "", mode: "insensitive" },
       },
-      include: {
-        location: true,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        expiration_date: true,
         category: true,
+        creator: true,
+        location: true,
+        schedule: true,
+        tags: true,
       },
       orderBy: { created_at: "desc" },
     };
     if (query.categoryId) {
-      payload.where!.category_id = +query.categoryId;
+      payload.where!.category_id = query.categoryId;
     }
     if (query.locationId) {
-      payload.where!.location_id = +query.locationId;
+      payload.where!.location_id = query.locationId;
+    }
+    if (query.scheduleId) {
+      payload.where!.schedule_id = { in: query.scheduleId };
     }
     if (query.limit) {
-      payload.take = +query.limit;
+      payload.take = query.limit;
     }
     if (query.offset) {
-      payload.skip = +query.offset;
+      payload.skip = query.offset;
     }
 
     const result = await jobRepo.searchJobs(payload);
 
-    return {
-      message: "success",
-      jobs: result,
-    };
+    return result;
   }
 }
 

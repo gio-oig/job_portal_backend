@@ -46,9 +46,13 @@ export interface JobSearchQuery {
   title: string;
   categoryId?: number;
   locationId?: number;
+  scheduleId?: number[];
   limit?: number;
   offset?: number;
 }
+
+export type makeString<T> = { [K in keyof T]?: string };
+export type JobSearchQueryStr = makeString<JobSearchQuery>;
 
 export interface CompanyFollowable {
   companyId: number;

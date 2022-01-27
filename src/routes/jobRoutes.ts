@@ -1,8 +1,6 @@
 import { Role } from "@prisma/client";
 import { NextFunction, Request, Response, Router } from "express";
 import jobController from "../controller/job.controller";
-import { ExtendedError } from "../public/models/ErrorClass";
-import { jobService } from "../service/jobService";
 import { authorize } from "../_helpers/authorization";
 
 const router = Router();
@@ -12,6 +10,7 @@ const router = Router();
  */
 
 router.get("/", jobController.getAll);
+router.get("/search", jobController.searchJobs);
 
 /**
  * @openapi

@@ -5,12 +5,8 @@
   "main": "server.js",
   "scripts": {
     "build": "tsc",
-    "build:watch": "tsc -w",
-    "dev": "npx concurrently \"npm run build\" \"npm run dev:run\"",
-    "dev:watch": "npx concurrently \"npm run build:watch\" \"npm run dev:run\"",
-    "dev:run": "npx nodemon build/server.js",
     "start": "node build/server.js",
-    "dev2": "ts-node-dev --respawn -- src/server.ts"
+    "dev": "ts-node-dev --respawn -- src/server.ts"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -34,6 +30,7 @@
     "multer": "^1.4.3",
     "nanoid": "^3.1.30",
     "nodemailer": "^6.6.3",
+    "query-string": "^7.0.1",
     "streamifier": "^0.1.1",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.6",

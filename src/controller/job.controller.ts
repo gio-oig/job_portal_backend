@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import { JobSearchQuery, JobSearchQueryStr } from "../constants/interfaces";
 import { ExtendedError } from "../public/models/ErrorClass";
 import { jobService } from "../service/jobService";
+import queryHelper from "../_helpers/queryHelper";
 
 class JobController {
   async getAll(req: Request, res: Response, next: NextFunction) {
@@ -12,7 +14,7 @@ class JobController {
 
     let response = {
       message: "success",
-      data: jobs,
+      jobs: jobs,
     };
     return res.status(200).json(response);
   }
@@ -49,6 +51,38 @@ class JobController {
       data: job,
     };
     return res.status(200).json(response);
+  }
+
+  async searchJobs(
+    req: Request<any, any, any, JobSearchQueryStr>,
+    res: Response,
+    next: NextFunction
+  ) {
+    const query = queryHelper.transform<JobSearchQueryStr, JobSearchQuery>(
+      req.query,
+      {
+        title: "string",
+        categoryId: "number",
+        locationId: "number",
+        scheduleId: "array",
+        limit: "number",
+        offset: "number",
+      }
+    );
+
+    let jobs;
+    try {
+      jobs = await jobService.searchJobs(query);
+    } catch (error) {
+      if (error instanceof ExtendedError)
+        return next(new ExtendedError(error.message));
+    }
+
+    let response = {
+      message: "success",
+      jobs: jobs,
+    };
+    res.status(200).json(response);
   }
 }
 

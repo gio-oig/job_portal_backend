@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Request, Router } from "express";
 import jobRouter from "./jobRoutes";
 import companyRouter from "./companyRoutes";
 import searchRouter from "./searchRoutes";
@@ -6,6 +6,7 @@ import locationRouter from "./locationRoutes";
 import categoryRouter from "./categoryRoutes";
 import seekerRouter from "./seekerRoutes";
 import scheduleRouter from "./schedule.route";
+import queryHelper from "../_helpers/queryHelper";
 
 const router = Router();
 
@@ -15,7 +16,21 @@ const router = Router();
  * @prefix /api
  */
 
-router.use("/search", searchRouter);
+// type IQuery = {
+//     someValue1:
+// }
+
+router.use(
+  "/test",
+  (req: Request<any, any, any, { someValue: string }>, res) => {
+    queryHelper.parsAsArray(req.query.someValue);
+    console.log("req.params");
+    console.log(req.query);
+    return res.json({ body: req.body, query: req.query });
+  }
+);
+
+// router.use("/search", searchRouter);
 router.use("/job", jobRouter);
 router.use("/company", companyRouter);
 router.use("/seeker", seekerRouter);
